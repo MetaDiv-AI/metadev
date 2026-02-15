@@ -25,6 +25,7 @@ func NewBuilder() *Builder {
 	convertor.ManageType(map[string]any{}, typescriptify.TypeOptions{TSType: "{[key: string]: any}"})
 	// Handle []map[string]any as array of indexed signature objects
 	convertor.ManageType([]map[string]any{}, typescriptify.TypeOptions{TSType: "{[key: string]: any}[]"})
+	convertor.WithPrefix(GeneratedFileHeader)
 	return &Builder{
 		Typescriptify: convertor,
 		ApiInfos:      make([]ApiInfo, 0),
@@ -42,7 +43,7 @@ func (b *Builder) Build(appName string, folderPath string) {
 	os.RemoveAll(targetFolder)
 	os.MkdirAll(targetFolder, os.ModePerm)
 
-	os.WriteFile(filepath.Join(targetFolder, "general.ts"), []byte(`
+	os.WriteFile(filepath.Join(targetFolder, "general.ts"), []byte(GeneratedFileHeader+`
 export interface Response<T> {
     success: boolean;
     time: string;

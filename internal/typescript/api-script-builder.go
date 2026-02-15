@@ -78,7 +78,7 @@ func (b *ApiScriptBuilder) Build(infos []ApiInfo) string {
 		b.Content += apiContent
 	}
 
-	page := "import axios, { AxiosResponse } from 'axios';\n"
+	page := GeneratedFileHeader + "import axios, { AxiosResponse } from 'axios';\n"
 	page += "import { Response } from './general';\n"
 
 	importKeys := make([]string, 0)
