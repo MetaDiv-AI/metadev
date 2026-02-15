@@ -25,7 +25,6 @@ func NewBuilder() *Builder {
 	convertor.ManageType(map[string]any{}, typescriptify.TypeOptions{TSType: "{[key: string]: any}"})
 	// Handle []map[string]any as array of indexed signature objects
 	convertor.ManageType([]map[string]any{}, typescriptify.TypeOptions{TSType: "{[key: string]: any}[]"})
-	convertor.WithPrefix(GeneratedFileHeader)
 	return &Builder{
 		Typescriptify: convertor,
 		ApiInfos:      make([]ApiInfo, 0),
@@ -59,7 +58,12 @@ export interface Page {
     total: number;
 }
 `), os.ModePerm)
-	b.Typescriptify.ConvertToFile(filepath.Join(targetFolder, "models.ts"))
+	modelsPath := filepath.Join(targetFolder, "models.ts")
+	converted, err := b.Typescriptify.Convert(nil)
+	if err != nil {
+		panic(err)
+	}
+	os.WriteFile(modelsPath, []byte(GeneratedFileHeader+converted), os.ModePerm)
 	scriptBuilder := NewApiScriptBuilder()
 	script := scriptBuilder.Build(b.ApiInfos)
 	os.WriteFile(filepath.Join(targetFolder, "api.ts"), []byte(script), os.ModePerm)
