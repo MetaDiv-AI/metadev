@@ -2,6 +2,7 @@ package metadev
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/MetaDiv-AI/metadev/types"
 )
@@ -30,6 +31,6 @@ func (b *appBuilder) Build() types.App {
 	if ok {
 		panic(fmt.Sprintf("app %s already registered", b.name))
 	}
-	Apps[b.name] = types.NewApp(b.name, "operagent", "operagent", b.migrations)
+	Apps[b.name] = types.NewApp(b.name, os.Getenv("SQL_DATABASE"), os.Getenv("MONGO_DATABASE"), b.migrations)
 	return Apps[b.name]
 }
